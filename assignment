@@ -1,0 +1,96 @@
+# Base class for Superheroes
+class Superhero:
+    def __init__(self, name, secret_identity, power_level):
+        self._name = name  # Protected attribute for encapsulation
+        self._secret_identity = secret_identity
+        self._power_level = power_level
+        self._is_active = True
+
+    # Getter for name
+    @property
+    def name(self):
+        return self._name
+
+    # Setter for power_level with validation
+    @property
+    def power_level(self):
+        return self._power_level
+
+    @power_level.setter
+    def power_level(self, value):
+        if value < 0:
+            raise ValueError("Power level cannot be negative")
+        self._power_level = value
+
+    # Method to toggle active status
+    def toggle_active(self):
+        self._is_active = not self._is_active
+        return f"{self._name} is now {'active' if self._is_active else 'inactive'}"
+
+    # Abstract-like method for polymorphism
+    def use_power(self):
+        raise NotImplementedError("Subclasses must implement use_power()")
+
+    def __str__(self):
+        return f"{self._name} (Secret: {self._secret_identity}), Power Level: {self._power_level}"
+
+
+# Derived class for Flying Heroes
+class FlyingHero(Superhero):
+    def __init__(self, name, secret_identity, power_level, flight_speed):
+        super().__init__(name, secret_identity, power_level)
+        self._flight_speed = flight_speed
+
+    def use_power(self):
+        return f"{self._name} soars through the sky at {self._flight_speed} mph!"
+
+    def __str__(self):
+        return f"{super().__str__()}, Flight Speed: {self._flight_speed} mph"
+
+
+# Derived class for Strength Heroes
+class StrengthHero(Superhero):
+    def __init__(self, name, secret_identity, power_level, strength_tons):
+        super().__init__(name, secret_identity, power_level)
+        self._strength_tons = strength_tons
+
+    def use_power(self):
+        return f"{self._name} lifts {self._strength_tons} tons with ease!"
+
+    def __str__(self):
+        return f"{super().__str__()}, Strength: {self._strength_tons} tons"
+
+
+# Demonstration program
+def main():
+    # Create instances of different heroes
+    skyhawk = FlyingHero("Skyhawk", "Alex Reed", 85, 300)
+    titan = StrengthHero("Titan", "Sam Carter", 90, 50)
+
+    # Store heroes in a list to demonstrate polymorphism
+    heroes = [skyhawk, titan]
+
+    # Display hero details and their powers
+    print("Superhero Team:")
+    for hero in heroes:
+        print(f"- {hero}")
+        print(f"  Power: {hero.use_power()}")
+        print(f"  Status: {hero.toggle_active()}")
+        print()
+
+    # Change power level to demonstrate setter
+    try:
+        skyhawk.power_level = 95
+        print(f"Updated {skyhawk.name}'s power level to {skyhawk.power_level}")
+    except ValueError as e:
+        print(f"Error: {e}")
+
+    # Attempt invalid power level
+    try:
+        titan.power_level = -10
+    except ValueError as e:
+        print(f"Error updating {titan.name}'s power level: {e}")
+
+
+if __name__ == "__main__":
+    main()
